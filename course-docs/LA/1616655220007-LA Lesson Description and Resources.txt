@@ -1,0 +1,5 @@
+In this lesson we will cover:
+
+1. What we can expect to see on the exam.
+2. How this course will be structured to match the exam.
+3. What topics and Google Cloud services we can expect to be tested.
