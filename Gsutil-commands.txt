@@ -1,0 +1,166 @@
+C:\Users\Shrisha>
+C:\Users\Shrisha>gsutil mb -c NEARLINE -l ASIA1 gcp-learning-project-358505_NL
+CommandException: "mb" command does not support "file://" URLs. Did you mean to
+use a gs:// URL?
+
+C:\Users\Shrisha>gsutil mb -c NEARLINE -l ASIA1 gs://gcp-learning-project-358505
+_NL
+Creating gs://gcp-learning-project-358505_NL/...
+BadRequestException: 400 Invalid bucket name: 'gcp-learning-project-358505_NL'
+
+C:\Users\Shrisha>gsutil mb -c NEARLINE -l ASIA1 gs://gcp-learning-project-358505
+_nl
+Creating gs://gcp-learning-project-358505_nl/...
+
+C:\Users\Shrisha>gsutil mb -c STANDARD -l ASIA-SOUTH1 gs://gcp-learning-project-
+358505_mumbai
+Creating gs://gcp-learning-project-358505_mumbai/...
+
+C:\Users\Shrisha>
+
+
+
+## Enable Object Versioning:
+`gsutil versioning set on gs://&lt;BUCKET&gt;`
+
+## Check full object details in bucket:
+`gsutil ls -a gs://&lt;BUCKET&gt;`
+
+## Download current lifecycle policy to local machine to edit:
+`gsutil lifecycle get gs://&lt;BUCKET&gt; > filename.json`
+
+## Set new lifecycle policy after making above edits:
+`gsutil lifecycle set filename.json gs://&lt;BUCKET&gt;`
+
+# Common commands
+
+- Remove a bucket:
+      `gsutil rm -r gs://<BUCKET>`
+- Create a new bucket:
+      `gsutil mb -l <location> -c <class> gs://<BUCKET>`
+- Copy local files to bucket:
+  Note: Use -m for parallel threading
+        `gsutil -m cp -r <files/directory> gs://<BUCKET>`
+- Check versioning policy:
+      `gsutil versioning get gs://<BUCKET>`
+- Enable versioning:
+      `gsutil versioning set on gs://<BUCKET>`
+- View bucket folder contents:
+      `gsutil ls gs://<BUCKET>/<folder>`
+- View all subfolder contents:
+      `gsutil ls -r gs://<BUCKET>`
+- Change storage class in existing bucket:
+  Note: Disable versioning first
+      `gsutil versioning set off gs://<BUCKET>`
+  Note: Add -m for parallel threading
+      `gsutil -m rewrite -r -s NEARLINE gs://<BUCKET>/*`
+- Give public read access to an object via ACL:
+      `gsutil acl ch -u AllUsers:R gs://<BUCKET/object>`
+- Revoke public access:
+      `gsutil acl ch -d AllUsers gs://<BUCKET/>object`
+- Delete bucket:
+      `gsutil rm -r gs://<BUCKET>`
+	  
+https://cloud.google.com/storage/docs/gsutil/commands/acl
+
+C:\Users\Shrisha>gsutil iam ch user:upendertadewar.wmb@gmail.com:storageViewer g
+s://gcp-learning-project-358505_nl
+BadRequestException: 400 Role roles/storage.storageViewer is not supported for t
+his resource.
+
+C:\Users\Shrisha>gsutil iam ch user:upendertadewar.wmb@gmail.com:roles/storage.o
+bjectViewer gs://gcp-learning-project-358505_nl
+
+C:\Users\Shrisha>gsutil iam ch user:allUsers:roles/storage.objectViewer gs://gcp
+-learning-project-358505_nl
+BadRequestException: 400 Member type allUsers should be used without prefix.
+
+C:\Users\Shrisha>gsutil iam ch allUsers:roles/storage.objectViewer gs://gcp-lear
+ning-project-358505_nl
+
+C:\Users\Shrisha>gsutil iam ch -d allUsers:roles/storage.objectViewer gs://gcp-l
+earning-project-358505_nl
+
+C:\Users\Shrisha>gsutil iam ch -d user:upendertadewar.wmb@gmail.com:roles/storag
+e.objectViewer gs://gcp-learning-project-358505_nl
+
+C:\Users\Shrisha>gsutil iam ch -d user:upendertadewar.wmb@gmail.com:roles/storag
+e.objectViewer gs://gcp-learning-project-358505_nl
+No changes made to gs://gcp-learning-project-358505_nl/
+
+C:\Users\Shrisha>
+C:\Users\Shrisha>gsutil acl ch u:upendertadewar.wmb@gmail.com:storageObjectViewe
+r gs://gcp-learning-project-358505_nl/speedtest.PNG
+CommandException: "acl" command does not support "file://" URLs. Did you mean to
+ use a gs:// URL?
+
+C:\Users\Shrisha>gsutil acl ch u:upendertadewar.wmb@gmail.com:R gs://gcp-learnin
+g-project-358505_nl/speedtest.PNG
+CommandException: "acl" command does not support "file://" URLs. Did you mean to
+ use a gs:// URL?
+
+C:\Users\Shrisha>gsutil acl ch -u upendertadewar.wmb@gmail.com:R gs://gcp-learni
+ng-project-358505_nl/speedtest.PNG
+Updated ACL on gs://gcp-learning-project-358505_nl/speedtest.PNG
+
+C:\Users\Shrisha>gsutil acl ch -d -u upendertadewar.wmb@gmail.com:R gs://gcp-lea
+rning-project-358505_nl/speedtest.PNG
+CommandException: "acl" command does not support "file://" URLs. Did you mean to
+ use a gs:// URL?
+
+C:\Users\Shrisha>gsutil acl ch  -d upendertadewar.wmb@gmail.com:R gs://gcp-learn
+ing-project-358505_nl/speedtest.PNG
+No changes to gs://gcp-learning-project-358505_nl/speedtest.PNG
+
+C:\Users\Shrisha>gsutil acl ch  -d upendertadewar.wmb@gmail.com gs://gcp-learnin
+g-project-358505_nl/speedtest.PNG
+Updated ACL on gs://gcp-learning-project-358505_nl/speedtest.PNG
+
+C:\Users\Shrisha>gsutil acl ch -u upendertadewar@gmail.com:R gs://gcp-learning-p
+roject-358505_nl/speedtest.PNG
+CommandException: Received bad request from server: BadRequestException: 400 Unk
+nown user: upendertadewar@gmail.com
+
+C:\Users\Shrisha>
+
+pip install pybase64
+
+python -c 'import base64; import os; print(base64.b64encode(os.urandom(32)).decode("utf-8"))'
+
+gsutil  -o 'GSUtil:encryption_key='ek9hJ5yLDk7hAA/1jV9xYShIJg/XGcfmQDoBc7T6YLw= cp test.txt gs://gcp-learning-project-358505-csek/
+gsutil  -o 'GSUtil:encryption_key='ek9hJ5yLDk7hAA/1jV9xYShIJg/XGcfmQDoBc7T6YLw= cp  gs://gcp-learning-project-358505-csek/test.txt eccrtpttest.txt
+
+
+C:\Users\Shrisha\Desktop>gsutil ls
+gs://gcp-learning-project-358505-cmek/
+gs://gcp-learning-project-358505-csek/
+gs://gcp-learning-project-358505-ui/
+gs://gcp-learning-project-358505-ver/
+gs://gcp-learning-project-358505-versionong-ui/
+gs://gcp-learning-project-358505_delhi/
+gs://gcp-learning-project-358505_mumbai/
+gs://gcp-learning-project-358505_nl/
+
+C:\Users\Shrisha\Desktop>gsutil versioniong get gs://gcp-learning-project-358505
+-ver/
+Did you mean this?
+        versioning
+CommandException: Invalid command "versioniong".
+
+C:\Users\Shrisha\Desktop>gsutil versioning get gs://gcp-learning-project-358505-
+ver/
+gs://gcp-learning-project-358505-ver: Suspended
+
+C:\Users\Shrisha\Desktop>gsutil versioning set gs://gcp-learning-project-358505-
+ver/
+CommandException: Argument to "versioning set" must be either <on|off>
+
+C:\Users\Shrisha\Desktop>gsutil versioning set on gs://gcp-learning-project-3585
+05-ver/
+Enabling versioning for gs://gcp-learning-project-358505-ver/...
+
+C:\Users\Shrisha\Desktop>gsutil versioning get gs://gcp-learning-project-358505-
+ver/
+gs://gcp-learning-project-358505-ver: Enabled
+
+	  
