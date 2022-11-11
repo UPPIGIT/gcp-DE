@@ -1,0 +1,246 @@
+After creating the dataset we will create a table inside it.
+
+To create a table, first we need the data, this is the data present locally in my system
+
+on which I am going to create table.
+
+Based on Social Security records, these files contain the different
+
+names in US with their gender and frequency of names been used.
+
+So we have 3 columns.
+
+name, its gender and this is the count of the name in the population.
+
+So Mary as a female has been used 6919 times.
+
+Anna as a female has been used 2698 times.
+
+I am attaching this data in the resources tab of this lecture, you can download it from
+
+there.
+
+So hop up to the console.
+
+Select our dataset, create table.
+
+First you have to select the data source for which this table is getting created for.
+
+If this is an empty table, or it is being created for the data in cloud storage, Drive
+
+or Bigtable or you are going to upload a local file.
+
+In Bigquery, you do not need to create an empty table before loading data into it.
+
+Directly create a table while uploading its data.
+
+I will choose upload file.
+
+Other sources, we will discuss in further sections of the course.
+
+Guys, do note that, this is not a real-time approach because we do not upload data from
+
+a local system to a datawarehouse.
+
+Ideally the data may come from any Ingestion services like pubsb, or storage service - cloud
+
+storage etc.
+
+From there we ingest it to Bigquery and then create table on top of that but since we are
+
+at very initial stage of this course so I am simply loading the local file.
+
+Uploading a local file has its own limitations, like the files you upload should be 10 MB
+
+or less and it must contain fewer than 16,000 rows.
+
+Moreover in case of multiple Files, they should be loaded individually.
+
+But as of now, we are ok with that.
+
+Anyways, browse the file.
+
+File format is csv.
+
+Table Type is by default Native.
+
+Actually, there are 2 types of table.
+
+Native table and external table, more or less like you have concept of Internal and external
+
+tables in Hive.
+
+For native tables they are backed by native BigQuery storage and external tables backed
+
+by storage external to BigQuery like cloud storage.
+
+Provide the table name here.
+
+Table names are unique per dataset.
+
+Then is the schema.
+
+Schema you can select Auto detect or specify it yourselves.
+
+Schema auto-detection is available when you load data into BigQuery and when you query
+
+an external data source.
+
+We will see it practically how schema is detected automatically in next lecture but as of now
+
+I will define the schema manually.
+
+Manually also, there are 2 ways, either in 1 shot using the text mode
+
+or individually one by one from here.
+
+Now talking about the column name properties, A column name must contain only letters, numbers,
+
+or underscores, and it must start with a letter or underscore.
+
+The maximum column name length is 128 characters and it cannot use any of the following prefixes:
+
+_TABLE_, _FILE_ , _PARTITION . Duplicate column names are not allowed even if the case differs.
+
+For example, a column named COLUMN1 in caps is considered identical to a column named
+
+column1 in small so both columns can’t co-exist.
+
+Select the data type and the optional mode.
+
+BigQuery supports the following modes for your columns.
+
+Nullable mode allows the Column NULL values (default).
+
+If the mode is unspecified, the column defaults to NULLABLE.
+
+In Required mode NULL values are not allowed and in Repeated mode Column contains an array
+
+of values of the specified type.
+
+I will add 3 fields as per my data.
+
+Partitioning and clustering, is covered in the next lectures.
+
+In advance options, you can specify table properties like, if you are going to append
+
+this file or overwrite the table, if the table is already existing.
+
+Here you can enter the maximum number of rows containing errors that can be ignored.
+
+If the number of rows with errors exceeds this value, the job will result in an 'invalid'
+
+message and fail.
+
+If you check this box then rows with extra column values that do not match the schema
+
+will be ignored and will not be imported into BigQuery.
+
+For example we have defined a schema of 3 columns and there is some row in the file
+
+which has 4 columns then if this is enabled that row will not be imported to Bigquery.
+
+Field delimiter for a csv file.
+
+Ours is comma.
+
+Then if you wish to skip some header rows from the file then you can provide the number
+
+of rows to be skipped here.
+
+Jagged rows.
+
+Guys it is a usual thing that for each column specified in schema, not all of the rows in
+
+your data file would have values.
+
+Importer doesn’t like the null fields in source data.
+
+Until and unless an actual Null string is specified there and this option is not checked,
+
+all those rows would be considered as bad rows and obviously if there are too many bad
+
+records, an invalid error is returned in the job.
+
+Check this Allow jagged rows to accept rows in CSV files that are missing trailing column
+
+values.
+
+If checked, the missing values are treated as nulls.
+
+If unchecked, records with missing trailing columns are treated as bad records.
+
+Select encryption.
+
+Guys You cannot add an expiration time at this stage when you create a table atleast
+
+using Cloud Console.
+
+Only after a table is created, you can add or update a table expiration on the Table
+
+Details page which I will show you once it gets created.
+
+Click create table.
+
+The table got created.
+
+You can view its schema, the details.
+
+See from details page if you edit it, you will get the option to set the table expiration
+
+date.
+
+And this is important – the Preview option.
+
+Bigquery allows you to preview the data firsthand.
+
+It is like select * from table limit some number.
+
+But the best part is where select * will charge you some bucks, this preview does not charge
+
+you anything.
+
+So it is recommended that if you wish to see only the glimpse of table then don’t run
+
+select * limit query as it is chargeable.
+
+Use this non-chargeable Preview option.
+
+Talking about its pricing, when you create and use tables in BigQuery, your charges are
+
+based on how much data is stored in the tables and its partitions and on the queries you
+
+run against the table data.
+
+Table creation is free.
+
+You are just charged for storage and querying.
+
+What is the pricing model for it, there is a full lecture coming ahead in the course
+
+which solely explains the pricing for all aspects in Bigquery.
+
+But yeah, I will talk about the table quotas and limits in here.
+
+As of now, You are limited to 1,500 operations per table per day whether the operation appends
+
+data to a table or truncates a table.
+
+These operations includes the combined total of all load jobs, copy, and query jobs that
+
+append to or overwrite a destination table.
+
+For example, if you run 600 copy jobs that append data to a table and 900 query jobs
+
+you would reach the quota.
+
+Then Maximum columns in a table, query result, or view definition can be 10,000.
+
+Again I would say that this is just one way of creating a table.
+
+There can pe partitioned or clustered tables and also more operations to be performed on
+
+the tables.
+
+I have it covered for you in this course.
+

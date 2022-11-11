@@ -1,0 +1,1 @@
+select name, count from `bigquery-public-data.tablename` where gender = 'M' order by count desc limit 10

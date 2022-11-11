@@ -1,0 +1,103 @@
+First is, To retrieve data from stored cache, the duplicate query text must be exactly the
+
+same as the original query.
+
+If your cached query was select * from table 1 then the next query should be same only,
+
+it can not be even select * from table 1 limit 100. It should be exact replica of the original query.
+
+Queries are not cached when you are specifying a destination table to store the results.
+
+They are also not cached If any of the tables or logical views that you are using in the
+
+query have changed since the results were previously cached.
+
+So suppose you fired a query now on a table, the results will get cached but after sometime
+
+you got some inserts in that table and now if you run the same query, you won’t get
+
+your results from the cached table, this time the query will go to the database and fetch
+
+results from there and definitely you will be charged for this.
+
+Next, results are not cached for the tables which have streaming ingestion i.e. the tables
+
+in which data is written in real -time streams.
+
+If the query uses non-deterministic functions like date and time functions then also results
+
+are not cached.
+
+For example if your query is using functions like CURRENT_TIMESTAMP() and NOW(), CURRENT_USER()
+
+which returns different values on different times, in those cases caching the results
+
+make no sense as the results will vary from time to time.
+
+Results are not cached If the query runs against an external data source like BigTable or CloudStorage.
+
+For query results to persist in a cached results table, the result set must be smaller than
+
+the maximum response size which is 10 GB compressed data by default.
+
+That was for the limitations.
+
+Now 1 more thing guys, for strict cost cutting you can even bind your queries to only look
+
+for cached results and fail otherwise.
+
+By providing some settings in CLI, I can instruct my query to only fetch the results if they
+
+are already cached or otherwise fail.
+
+This functionality is extremely useful when you have a large team firing same queries
+
+over and over again.
+
+You can cut a great amount of cost by implementing this part.
+
+This is not possible in UI as of now, we will cover it in bq command line or in Python client
+
+library.
+
+That’s for the caching part.
+
+Next in the options we have SQL dialect.
+
+You can use any of the SQL dialects, Standard or Legacy.
+
+Standard is used mostly.
+
+First and foremost thing, this selection you should keep it to Auto-select.
+
+Basically, here it is asking you to select any location where you want to process the
+
+query but we already know that a query is processed in the same location as the dataset
+
+location so there is not much purpose of this location option here.
+
+You can even try it.
+
+Choose a location other than the location of your referenced dataset and the query will
+
+fail.
+
+In short just keep it to Auto-select option here.
+
+Then encryption you already know.
+
+Last, this is a good option for cost control.
+
+In this box you can specify the maximum number of bytes for which you can pay for this query.
+
+If this query is going to use more than the specified number of bytes then it will fail
+
+without charging you anything.
+
+Let me demonstrate it.
+
+Let say, I can pay maximum for 12 bytes
+
+See it is saying query exceeded limit for bytes billed 12 So you can not run it and i was not charged for it.
+
+So guys that’s it, these all are the optional parameters or settings you can leverage while running any sql query.

@@ -1,0 +1,3 @@
+select sum(count) as a1 from `bigquery-demo-285417.dataset1.deleteit` where name like 'N%' and id = 'EL124L'
+
+select * from `bigquery-public-data.geo_openstreetmap.planet_layers` where cast(layer_code as string) = "1101"

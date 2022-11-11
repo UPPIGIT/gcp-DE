@@ -1,0 +1,108 @@
+So guys while creating table we saw an option to auto detect the schema.
+
+As the name itself is suggesting that it will automatically infer the schema of table by
+
+seeing the data in the file.
+
+When auto-detection is enabled, BigQuery starts the inference process by selecting a random
+
+file in the data source and scanning up to 100 rows of data to use as a representative
+
+sample.
+
+BigQuery then examines each field and attempts to assign a data type to that field based
+
+on the values in the sample.
+
+When it detects schemas, it might, on rare occasions, change a field name to make it
+
+compatible with BigQuery SQL syntax.
+
+Note that the schema detection is only available for csv and json file format.
+
+It is not used with Avro, Parquet, ORC, Firestore export or Datastore export files because for
+
+these files schema is included in the data file itself so no need.
+
+In addition to detecting schema details, auto-detection recognizes the following:
+
+BigQuery recognizes gzip-compatible file compression when opening a file.
+
+It can detect comma, pipe and tab as delimiter It can even detect the headers from a file.
+
+It infers headers by comparing the first row of the file with other rows in the data set.
+
+If the first line contains only strings, and the other lines do not, BigQuery assumes that
+
+the first row is a header row and it does take that row into consideration while deciding
+
+the schema of table.
+
+Moreover, if you have a header in the data, it will create a table with the same column names
+
+specified in header.
+
+BigQuery detects the endline character but if it is in quotes like this (“/n”) it
+
+is not interpreted as a row boundary rather it will be included in the column strings
+
+only.
+
+When you use schema detection, dates must be in the following format of (year-month-day)
+
+separated with a dash separator.
+
+If your date field is using some other format then auto detection will treat it as a string.
+
+But for timestamps it has a wide array of formats to detect.
+
+For example It can recognize hour minute second or hour minute second + milliseconds
+
+Not only these, there are many other timestamp formats which it can auto detect.
+
+Knowing these things about auto detection.
+
+Let us try it.
+
+I will use this file which has variety of datatypes.
+
+This is some mocked up date for an ecommerce platform.
+
+We have customer_name, it should pick it as a string, orderId again should be string,
+
+order value should be float, order timestamp when the order was placed, it should be considered as timestamp and last is the delivery
+
+date which should be considered as date only.
+
+Note that there is no header for this file.
+
+Let me now create a table for this using auto schema feature.
+
+See it has auto detected the data type of every column properly.
+
+Header was not there so names are given with its own naming convention.
+
+Also notice that if you are doing auto schema then all the columns in table would have default
+
+nullable mode assigned.
+
+Let us quickly try it with the data having header row.
+
+In same data I will put a header row.
+
+Create a new table.
+
+Yeah great, since the header row was not matching with the data types of all other rows so bigquery
+
+inferred it as a header row and assigned the columns names as per it.
+
+Now guys even though Auto-schema detection is as strong feature of Bigquery but it is
+
+always recommended that you don’t rely fully on auto detection.
+
+Have it cross checked manually before you perform any operations on this table and if
+
+you see any column not detected properly, edit it and How you can edit the schema is
+
+covered in further section.
+

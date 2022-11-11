@@ -1,0 +1,171 @@
+So guys we did run our 1st sql query in the previous lecture and we also saw some of the
+
+query settings options for extended functionalities.
+
+This lecture is kinda extension of the previous lecture where we will cover how to query multiple
+
+tables using a wildcard.
+
+Wildcard tables enable you to query multiple tables using concise SQL statements.
+
+Please these note that these are not some special kind of tables, wildcard tables are
+
+just a representation of union of all the tables that matches a particular wildcard
+
+expression.
+
+For a very basic example, suppose you have tables like sales_table1, sales_table2, sales_table3,
+
+sales_table4 having same schema or atleast compatible schema.
+
+Now if you want to select the data from all these tables at once, what query you can run
+
+is select col1, col2s from … from project_name.dataset name.sales_table* in the form of wildcard expression
+
+. This query will return col1 and col2 from all the tables which matches the expression
+
+sales_table i.e. all the 4 tables.
+
+A practical example of it would be clear in the bigquery’s public dataset tables.
+
+Once you select any public dataset, A new resource will be listed here containing many
+
+datasets for each public dataset.
+
+I don’t care much about all the columns.
+
+Just see these ones.
+
+Year, month, date and this is max temperature recorded on that day.
+
+The point here is that, in real-time projects you may encounter with tables like these ones
+
+which contain the same schema’d data.
+
+In those cases, if you wish to write a query to scan the data for all the tables at once
+
+then the normal query would be very long, you know because all the tables need to be
+
+Unioned like select columns from table 1 union select columns from table 2 union table 3
+
+and so on so forth for each table.
+
+The same lengthy query can be made much more concise using a wildcard table.
+
+So suppose you have to find the minimum temperature recorded for the 1950’s i.e from 1950 to
+
+1959, then this is how you can write the query.
+
+This is a very basic query where I am selecting the max temperature, just ignore this filter,
+
+where max not equal to 999.9..
+
+Actually in the data, max column’s null values are replaced by this number, so
+
+basically by putting this filter I am ignoring those stuffed values while calculating max
+
+temperature.
+
+Now if you focus on from statement, here, I have put a asterisk sign for tables.
+
+This means this query going to hit all the tables starting with gsod195 which eventually
+
+are tables from 1950 to 1959.
+
+Run.
+
+Now you may ask that this is a very high-level wildcard selection and what if they have to
+
+select few tables like 1951, 1952 and 1953.
+
+For this cherry picking of tables you can leverage the _TABLE_SUFFIX pseudo column in
+
+the WHERE clause.
+
+Actually when you write a wildcard query for a table then each row in the wildcard table would contain
+
+an internal pseudo column _TABLE_SUFFIX that contains the value matched by the wildcard
+
+character.
+
+For example, in the previous wildcard query that scans all tables from the 1950s using
+
+the last digit of the year.
+
+In that case the corresponding _TABLE_SUFFIX pseudo column would contain the values in
+
+the of range 0 through 9, representing the tables gsod1950 through gsod1959.
+
+Now you can take leverage of this pseudo column in where clause
+
+to filter for specific tables.
+
+For example, to filter for the maximum temperature in the years 1951 and 1952 and 1953, use the
+
+values 1, 2 and 3 for _TABLE_SUFFIX.
+
+So in the same query I would add
+
+This query will hit the table 1951, 52 and 53.
+
+You can even use between operator here , where table_suffix between 1 and 3.
+
+Now using table_suffix as a filter will also reduce the number of bytes scanned, which
+
+reduces the cost of running your queries.
+
+But do note that Filters on _TABLE_SUFFIX that include subqueries querying any datasets
+
+cannot be used to limit the number of tables scanned for a wildcard table.
+
+Let me demonstrate it for you.
+
+Let say I want to scan only table 1949 using wildcard query
+
+First of all, let me show How much data it will scan if I don’t use subquery and provide
+
+it a direct value.
+
+See, it is limiting the tables to be scanned to only
+
+table 1949, hence 3.4 mb would be processed for this query.
+
+And now if I am using subquery to retrieve this table suffix value.
+
+Ok, in my understanding I have written this query which should scan only table 1949 because
+
+you know.. this subquery is going to return number 49 and table_suffix = 49 in where clause
+
+means select table 1949 only.
+
+But no, Bigquery won’t limit the tables scan as it is using a subquery in the filter.
+
+This query will only limit the scan from 1900 to 1999 but does not limit it based on the
+
+filter condition in the subquery.
+
+If you want to perform the above use case, you have to write 2 queries.
+
+First run the subquery and get the list of tables returned by that and then Construct
+
+the second query based on the values from the first query, which we already did.
+
+An interesting thing to note here is that this limitation is not applicable to all subqueries
+
+in where clause.
+
+It is just to the subqueries which are hitting any datasets.
+
+If I write a subquery which does not hit any dataset then the table scan would be limited
+
+only.
+
+For example, if I write a subquery like this.
+
+See this subquery is going to return 49 but since it is not querying any dataset that
+
+is why your data to be processed is only 3.4 mb.
+
+Means table_suffix filter worked here.
+
+I hope you got this.

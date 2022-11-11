@@ -1,0 +1,27 @@
+CREATE MATERIALIZED VIEW
+  bigquery-demo-285417.dataset1.names_mv4 AS
+SELECT
+  name,
+  total_count
+FROM (
+  SELECT
+    name,
+    COUNT(*) AS total_count
+  FROM
+    bigquery-demo-285417.dataset1.names3
+  GROUP BY
+    name)
+
+
+CREATE MATERIALIZED VIEW
+  bigquery-demo-285417.dataset1.names_mv4 AS
+SELECT
+  name,
+  COUNT(*) AS total_count
+FROM (
+  SELECT
+    name
+  FROM
+    bigquery-demo-285417.dataset1.names3)
+GROUP BY
+  name

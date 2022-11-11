@@ -1,0 +1,92 @@
+SELECT
+  max,
+  ROUND((max-32)*5/9,1) celsius,
+  mo,
+  da,
+  year
+FROM
+  `bigquery-public-data.noaa_gsod.gsod195*`
+WHERE
+  max != 9999.9 # code for missing data
+ORDER BY
+  max DESC
+
+SELECT
+  max,
+  ROUND((max-32)*5/9,1) celsius,
+  mo,
+  da,
+  year
+FROM
+  `bigquery-public-data.noaa_gsod.gsod195*`
+WHERE
+  max != 9999.9 # code for missing data
+  AND ( _TABLE_SUFFIX = '1'
+    OR _TABLE_SUFFIX = '2'
+	OR _TABLE_SUFFIX = '3'  )
+ORDER BY
+  max DESC
+
+SELECT
+  ROUND((max-32)*5/9,1) celsius
+FROM
+  `bigquery-public-data.noaa_gsod.gsod19*`
+WHERE
+  _TABLE_SUFFIX = '49'
+
+
+SELECT
+  ROUND((max-32)*5/9,1) celsius
+FROM
+  `bigquery-public-data.noaa_gsod.gsod19*`
+WHERE
+  _TABLE_SUFFIX = (select '49' as a from `bigquery-public-data.noaa_gsod.gsod1949`
+     )
+
+
+SELECT
+  ROUND((max-32)*5/9,1) celsius
+FROM
+  `bigquery-public-data.noaa_gsod.gsod19*`
+WHERE
+  _TABLE_SUFFIX = (select a from (select '49' as a)) 
+  
+     
+INSERT INTO
+  `bigquery-demo-285417.dataset2.wildcard_demo*` (year,
+    count_dewp)
+SELECT
+  year,
+  count_dewp
+FROM
+  `bigquery-public-data.noaa_gsod.gsod193*`
+
+SELECT
+  year,
+  gender
+FROM
+  `bigquery-demo-285417.dataset2.wildcard_demo*`
+
+#standardSQL
+SELECT
+  max
+FROM
+  `bigquery-public-data.noaa_gsod.gsod195*`
+WHERE
+  max != 9999.9 # code for missing data
+  AND _TABLE_SUFFIX BETWEEN '0' AND '1'
+ORDER BY
+  max DESC
+
+#standardSQL
+SELECT
+  max
+FROM
+  `bigquery-public-data.noaa_gsod.*`
+WHERE
+  max != 9999.9 # code for missing data
+  AND _TABLE_SUFFIX BETWEEN 'gsod1950' AND 'gsod1951'
+ORDER BY
+  max DESC
+
+

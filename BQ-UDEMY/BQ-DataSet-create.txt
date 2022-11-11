@@ -1,0 +1,84 @@
+For region, Here I will choose, Mumbai.
+
+Yeah, please note that You can set the geographic location at creation time only.
+
+After a dataset has been created, the location and name becomes immutable and can't be changed.
+
+If you want to rename the dataset or want it in a new location then either you have
+
+to copy it to the new location or manually create a fresh one in the same way we are
+
+doing it now.
+
+Then we have default table expiration which specifies that any new table in this dataset
+
+will be deleted after how many days.
+
+we have 2 options for it.
+
+Never and Number of days after table creation If you select Never then Tables created in
+
+the dataset are never automatically deleted.
+
+You must delete them manually.
+
+If you select the second one then the tables in this dataset will be deleted after the
+
+provided number of days.
+
+You can even set table expiration time when you create a table.
+
+If you set the expiration in table creation part, then this dataset's table expiration
+
+is ignored.
+
+And, If you do not set a table expiration, neither at the dataset level and nor at table
+
+level, then the table never expires and you must delete it manually.
+
+Last is this encryption.
+
+As you know data is encrypted in the cloud so you have 2 ways to encrypt.
+
+Either let Google handle it by its own key or if want your data to get encrypted by your
+
+algorithms then you have to provide its key here.
+
+I will keep it to google managed key.
+
+So the summary is that all the tables that I will create under this dataset will be stored
+
+in Mumbai location.
+
+They will never be deleted automatically, and the tables data will be encrypted by google.
+
+Create dataset.
+
+See it got listed under your project.
+
+Now talking a little about the dataset quotas and limits.
+
+Even though you can create unlimited number of datasets per project but as you approach
+
+thousands of datasets in a project, dashboard’s performance begins to degrade, and listing
+
+datasets becomes slower.
+
+Number of tables in a dataset are also unrestricted but as you approach 50,000 or more tables
+
+in a dataset, enumerating them becomes slower.
+
+Moreover, Currently, the BigQuery web UI allows you to display only 50,000 tables per dataset.
+
+Next, You can add maximum 2,500 authorized views to a dataset's access control list.
+
+That’s it.
+
+Guys this was just 1 operation on dataset i.e. its creation but there are other operations
+
+also that can be performed with datasets like Copying datasets, updating dataset’s properties,
+
+controlling its access and others.
+
+I have covered it all in the course.
+

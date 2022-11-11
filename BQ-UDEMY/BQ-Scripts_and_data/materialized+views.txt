@@ -1,0 +1,20 @@
+
+CREATE MATERIALIZED VIEW bigquery-demo-285417.dataset1.names_mv as select name, sum(count) as total_count from bigquery-demo-285417.dataset1.names group by name
+
+CREATE MATERIALIZED VIEW bigquery-demo-285417.dataset1.names_mvd partition by date as select name, sum(count) as total_count, _PARTITIONDATE as date from bigquery-demo-285417.dataset1.demo_part_ingestion where _PARTITIONDATE = "2020-02-19" group by 1,3
+
+CREATE MATERIALIZED VIEW bigquery-demo-285417.dataset1.names_mv as select * from `bigquery-demo-285417.dataset1.names2`
+
+select name, sum(count) as total_count from bigquery-demo-285417.dataset1.names2 where rand() <1 group by name
+
+CREATE MATERIALIZED VIEW bigquery-demo-285417.dataset1.names_demo_mv1
+OPTIONS (enable_refresh = true)
+AS SELECT
+  name,
+  SUM(count) AS total_count
+FROM
+  bigquery-demo-285417.dataset1.names
+GROUP BY
+  name
+
+CALL BQ.REFRESH_MATERIALIZED_VIEW('bigquery-demo-285417.dataset1.names_mv')

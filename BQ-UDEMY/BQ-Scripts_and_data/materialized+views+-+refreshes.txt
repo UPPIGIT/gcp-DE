@@ -1,0 +1,12 @@
+
+CREATE MATERIALIZED VIEW bigquery-demo-285417.dataset1.names_demo_mv1
+OPTIONS (enable_refresh = true)
+AS SELECT
+  name,
+  SUM(count) AS total_count
+FROM
+  bigquery-demo-285417.dataset1.names
+GROUP BY
+  name
+
+CALL BQ.REFRESH_MATERIALIZED_VIEW('bigquery-demo-285417.dataset1.names_mv')

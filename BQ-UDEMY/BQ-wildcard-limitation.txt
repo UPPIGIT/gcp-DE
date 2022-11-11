@@ -1,0 +1,97 @@
+Let us now talk about some of the limitations while running wild table queries
+
+First is, Wildcard tables support native bigquery storage only.
+
+You cannot use wildcards when querying an external table or a view.
+
+If the wildcard table matches any view in the dataset, the query returns an error.
+
+For example, in the same case of 4 sales_tables, if you would have a view naming sales_table5
+
+and then you fire the wildcard query
+
+the query will fail.
+
+This is even true whether or not your query contains a WHERE clause on the _TABLE_SUFFIX
+
+pseudo column to filter out the view, means even if you write a where clause to scan only
+
+sales_table 1 and sales_table2 which are pure table using the _TABLE_SUFFIX column, query will still fail.
+
+Secondly, as of now, cached results are not supported for queries against multiple tables
+
+using a wildcard even if the ‘Use Cached Results’ option is checked.
+
+So If you run the same wildcard query multiple times, you would be billed for each query.
+
+Queries that contain DML statements cannot use a wildcard table as the target of the
+
+query.
+
+You may try to update, insert a wildcard table.
+
+It is not permissible.
+
+For example, in this query I am trying to insert values into a wildcard table named
+
+wildcard_demo.
+
+Bigquery returned me an error but if I am replacing this astrik sign with actual table name, it
+
+is a valid query.
+
+And yes, an important thing on How bigquery decides the schema of its wildcard tables.
+
+While executing a SQL query that uses a wildcard table, BigQuery automatically infers the schema
+
+of the most recently created wildcard table as the schema for all wildcard tables.
+
+So for example see, in dataset2, I have 4 tables as wildcard tables, with wildcard_demo1
+
+created first and wildcard_demo4 is the recently created table.
+
+Now while you run any query using these tables, Bigquery will infer the schema of wildcard_demo4
+
+for all the other tables since it is a recently created table.
+
+Notice that demo4 have 3 columns name, gender and count.
+
+If you try to use any other column in the query which is not in this schema, it will
+
+throw error.
+
+Let say I try to use year column in the query which is there in demo1 but not in the recently
+
+created table i.e. demo4.
+
+It says unrecognized name.
+
+If I remove the year column.
+
+It is valid.
+
+Alright, that was it. At last, I will wrap up this lecture by giving you a tip to use wildcard tables.
+
+Actually it is not something new, A known Tip only that Longer prefixes perform better
+
+than shorter prefixes.
+
+For example both these queries will return you the same data which is the maximum temperature
+
+of the year 1950 and 1951 but the 1st query will perform better than the 2nd one.
+
+Why because it has used the minimum wildcard characters to be scanned.
+
+Gsod195 means it has the possibility of only 10 tables out of which the filter clause will
+
+take 2 tables 1950 and 1951.
+
+But the other query has possibilities of all the century tables out of which it will take
+
+2 tables.
+
+So definitely there is less scanning in query 1 so it will perform better.
+
+That’s all for the wildcard tables and queries.
+
+See you.

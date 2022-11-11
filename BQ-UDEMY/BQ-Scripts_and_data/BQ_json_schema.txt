@@ -1,0 +1,20 @@
+[
+  {
+    "description": "name",
+    "mode": "REQUIRED",
+    "name": "name",
+    "type": "STRING"
+  },
+  {
+    "description": "name's gender",
+    "mode": "NULLABLE",
+    "name": "gender",
+    "type": "STRING"
+  },
+  {
+    "description": "total count of that name",
+    "mode": "NULLABLE",
+    "name": "count",
+    "type": "INTEGER"
+  }
+]

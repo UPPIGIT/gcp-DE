@@ -1,0 +1,7 @@
+insert into `bigquery-demo-285417.dataset1.names3` values ("Crom", "M", 2455, "S1")
+
+#select * EXCEPT(name), name as first_name from `bigquery-demo-285417.dataset1.names2`
+#select * EXCEPT(count), CAST(count as STRING) AS count from `bigquery-demo-285417.dataset1.names2`
+select * EXCEPT(count) from `bigquery-demo-285417.dataset1.names2`
+
+select * FROM `bigquery-demo-285417.dataset1.names2` FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR)

@@ -1,0 +1,204 @@
+Well now we have the table ready, its time to fire some query.
+
+From the dataset let me see top 10 male names.The query will go like this
+
+from here you will write project name.
+
+datasetname.
+
+Tablename in ticks.
+
+Note the difference between ticks and quotes.
+
+Usually this is a common point of confusion which is faced by most of the developers in
+
+real-time.
+
+The sign which i have used here is the tick sign which is there in the keyboard just before the digit 1 key.
+
+A quick tip.
+
+Guys actually while copying the commands from various notepads or shells, this tick sign
+
+gets converted to quotes or vice-versa depending upon whether that tool supports this sign
+
+or not, atleast I have seen this happening a lot, so you have to double check after copying
+
+the queries if every sign is intact or not, otherwise the queries are going to fail and
+
+you will un necessarily waste a good amount of your precious time in debugging the issue.
+
+So keep an eye on the signs.
+
+A green check mark icon is displayed if the query is valid and the validator also shows
+
+the amount of data the query will process when you run it.
+
+This is helpful for determining the cost of running the query.
+
+If the query is invalid, a red exclamation point icon is displayed.
+
+Run the query.
+
+See it completed in 2.1 sec and this much data was processed.
+
+How much cost this query would have incurred to you, all the quotas and pricing details
+
+are covered somewhere next in the course.
+
+Now If I try running this query again, it shows 0 seconds elapsed and it says the result was
+
+cached.
+
+This time the query was not processed because the previous query results were cached and
+
+the same is displayed here instantly and I was not even charged for that.
+
+We are going to learn about this caching mechanism in details in a bit.
+
+That was good.
+
+In here you can see a More drop down.
+
+Format will format this query and these are the query settings which were applied on the
+
+query we just run.
+
+In here, you can select the processing engine.
+
+Big query engine or cloud dataflow engine.
+
+Now guys big query engine is for batch processing.
+
+Bigquery engine expects and processes the table data in form of batches.
+
+For example, the query which I just run on names table was a process of batch paradigm
+
+as the table was already there.
+
+But in case of streaming data like when the data is coming from pub/sub, cloud dataflow
+
+engine will come forward.
+
+For the 1st time, it might ask you to enable the APIs for cloud dataflow engine so do enable
+
+it.
+
+Save. After you select the cloud Dataflow engine, in the resources list you will see one more option
+
+is there which is cloud dataflow sources, where the source will be a pub/sub topic.
+
+I already have a demo topic with me.
+
+As soon as you select it, a resource will be added in the list with a default dataset
+
+and table.
+
+Now for this data source, you can write a dataflow job which will query the streaming
+
+data from pub/sub topic.
+
+Let the query be
+
+Now create a dataflow job for this query.
+
+Job-name, choose region where the worker instances will be deployed.
+
+Optional parameters we will see later.
+
+Then the destination can be a Bigquery table or some Pub/Sub topic.
+
+As per your choice, you will fill the relevant fields.
+
+Like for Bigquery, you will fill the project id, dataset id and table name etc.
+
+So guys at this point, I am not going deep into streaming stuff and won’t even run
+
+it as of now.
+
+Further in the course detailed lectures are there, where I will deploy a end to end dataflow
+
+job for streaming data.
+
+Actually this dataflow engine came in between the query settings so I just gave you the
+
+brief idea of it so that you don’t keep wondering what it is till those lectures.
+
+Then if you want to save query results in a temporary table or a concrete table in your
+
+dataset.
+
+Actually by default, BigQuery saves all query results to a table, which can be either permanent
+
+or temporary.
+
+A temporary table is a randomly named table saved in a special dataset.
+
+These tables are not available for sharing, querying and are not visible to users and
+
+you are therefore not charged for storing temporary tables.
+
+These are the tables responsible for caching the query results.
+
+All the query results are by default stored into temporary tables for approx 24 hours.
+
+On the other hand, A permanent table is a new or existing table in any dataset to which
+
+you have access.
+
+Provide a project name, dataset name or table name and it will be created (if not there already) and populated
+
+the query results with the selected write exposition.
+
+Obviously you will be charged for storage in this case.
+
+The same location condition applies here as well i.e. the table you're querying must be
+
+in the same location as the dataset that contains the destination table.
+
+Then we have the option to allow large results.
+
+Normally, in all databases, especially in cloud environment, queries have a maximum
+
+response size i.e. what maximum bytes of data they can return from a query’s result.
+
+In bigquery it is around 10GB.
+
+But if you are checking this box, then it allows large results that are more than 10GB
+
+to be written in destination table.
+
+Then you have job priority whether Interactive which is the default or batch.
+
+Interactive queries start running immediately.
+
+They are basically on-demand queries.
+
+However, a batch query starts as soon as idle resources are available in the BigQuery shared
+
+resource pool which usually occurs within a few minutes.
+
+Batch queries don’t have any concurrent queries rate limit.
+
+You can throw any number of queries in a single shot which will be then queued and run as
+
+soon as the resources are available in shared pool.
+
+If BigQuery hasn't started the query within 24 hours which is almost impossible, BigQuery
+
+changes the job priority to interactive.
+
+Next, this box was by default checked that is why you were able to reuse the cached
+
+results.
+
+This option checked, means query attempts to reuse the results from a previous run of
+
+the same query unless the tables being queried have changed.
+
+I repeat unless the tables being queried have changed.
+
+If you don’t want to use cached results, then uncheck this box.
+
+Let me tell you some more about Caching features and limitations
+

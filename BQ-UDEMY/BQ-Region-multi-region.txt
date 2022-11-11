@@ -1,0 +1,191 @@
+Let us now start working the BigQuery components.
+
+First and foremost thing required to fire queries is the tables.
+
+In Bigquery data is not directly stored into tables rather we have one more component called
+
+Dataset which sits one hierarchical level above the table, means first we will have
+
+a dataset, inside which we can have any number of tables or views.
+
+Datasets are top-level containers that are used to organize and control access to your
+
+tables and views.
+
+Dataset basically contains metadata about your tables like in which zone the tables
+
+are stored, their retention period, encryption keys and all.
+
+A table or view must belong to a dataset, so you need to create at least one dataset
+
+before loading data into BigQuery.
+
+So let us create a dataset only.
+
+Umm before that let me setup the billing to upgrade it.
+
+Don’t worry you are still covered in the free trial.
+
+Actually Bigquery sandbox gives you the free access to let you use its UI without creating
+
+a billing account or enabling billing for your project but then you are subject to some
+
+limits and certain features are restricted.
+
+So link your project to Bigquery billing and if any charges in occur it will be deducted
+
+from those free $300 credit.
+
+Anyway, select project name and click on create dataset.
+
+First you have to enter a unique dataset name for this project.
+
+Some properties of dataset names are -Dataset name can contain up to 1,024 characters which
+
+can be (upper or lower case), numbers, and underscores.
+
+Dataset name cannot contain spaces or special characters such as -, &, @, or %. Dataset
+
+names are case sensitive.
+
+It means DATASET1 and dataset1 can co-exist in the same project.
+
+Next you have to provide this dataset location.
+
+You have this long list of regions where you can store this dataset.
+
+If you leave the value set to Default, the location is set to US.
+
+Now guys There are two types of locations: region and multi-region.
+
+Let me hold this dataset creation here and tell you the details of region and multi-region
+
+A region is a specific geographic place, such as Mumbai.
+
+If you are choosing Mumbai as location, google will ensure that all the tables and views
+
+of this dataset will be stored in data center located in Mumbai.
+
+This you will do when you know that you have to access its data from Nearby Mumbai region.
+
+This will avoid any network latency as the data is located few kms away from where you
+
+are accessing it.
+
+On the other hand, A multi-region is a large geographic area which contains many regions.
+
+We have 2 multi-regions, US and EU.
+
+These multi-regions contain many regions inside them such as in US multi-region we have Florida,
+
+north virginia and many more regions.
+
+You choose multi-region when you know that your dataset is going to be accessed from
+
+like overall US.
+
+When you select a multi-region Google will internally make copies of your data in its
+
+multiple regions to ensure that there is very less impact on the performance.
+
+No matter from wherever you query the dataset, you will get the performance as if you are
+
+accessing it from the same region where you are sitting.
+
+..
+
+As of know we can have only 2 multi-region US and Europe.
+
+But as a part of its expansion, Google is creating more multi-regions all over the world.
+
+I guess Asia multi-region is the earliest one that we can see in the near future.
+
+Now guys, A word of caution.
+
+Do not choose this location randomly as it can have cost and performance impacts.
+
+Let me take you out of this screen and mention few points which you should take into consideration before choosing any region
+
+or multi-region for a dataset.
+
+This is obvious that you should choose the region as closest as possible to the location
+
+from where you are accessing it.
+
+If the data is going to be accessed from multiple places which are at far distances then go
+
+for multi-region.
+
+One more thing to consider while you are choosing a region or multi-region is the resilience
+
+which they provide in case of failures or disasters.
+
+If you know, failures are broadly classified into 2 types – Soft failures and hard failures.
+
+Soft failure is an operational deficiency where the hardware is not destroyed.
+
+Examples include power failure, network partition, or a machine crash.
+
+However Hard failure is an operational deficiency where the hardware gets destroyed.
+
+Hard failures are more severe than soft failures.
+
+Examples include damage from floods, earthquakes, and hurricanes etc.
+
+Having said that, guys, in a single region, data is stored only in that region.
+
+There is no Google Cloud–provided backup or replication to another region.
+
+It does not mean that your data is not backed up at all.
+
+There are replicated copies of your data but it will be in the same regional datacenters
+
+where you have defined your dataset.
+
+Owing to these facts it can be deduced that a regional dataset is resilient to soft failures
+
+but not to hard failures.
+
+You may loose your data if the whole region got hit by some disaster.
+
+So If you want resilience in the region, you yourselves need to create cross-region dataset
+
+copies to enhance your disaster recovery guarantees but that obviously comes at its own cost.
+
+On the other hand, In a multi-region, data is stored in a single region but is backed
+
+up in geographically-separated regions to provide resilience to a regional disaster.
+
+If you have multi-region copies of your data then it is resilient to both soft and hard
+
+failures.
+
+In event of any machine-level failure, BigQuery will continue running with no more than a
+
+few milliseconds delay.
+
+Also You don’t have do this backup yourself and the recovery and failover process is fully
+
+managed by Google BigQuery.
+
+1 more important thing I would like to mention here is the case when your data is external
+
+and not in the BigQuery.
+
+If you remember, in the Bigquery advantages lecture, I mentioned that using Federal queries,
+
+Bigquery can directly query the data which is present in Cloud Storage, big table, google
+
+drive etc without physically ingesting it.
+
+In that case, the data you're querying must be in the same location as your BigQuery dataset.
+
+For example, if your Cloud Storage bucket containing the data is in the EU multi-region,
+
+then the Bigquery dataset must be in a EU multi-region and Same applies to the regions
+
+as well.
+
+So that’s for the regions and multi-region, now you can wisely choose a region or multi-region and we will continue dataset creation from next
+
+lecture.

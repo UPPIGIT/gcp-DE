@@ -1,0 +1,4 @@
+BQ Notes
+
+Public datasets:
+https://console.cloud.google.com/bigquery?project=bigquery-public-data&page=project

@@ -1,0 +1,223 @@
+Next button in dashboard is schedule query.
+
+As the name implies you can schedule queries to run on a recurring basis.
+
+To do so, first write the query in editor, FYI, scheduled queries must be written in
+
+standard SQL, which can include DDLs and DMLs.
+
+After that click on schedule query and these are the configurations
+
+Before that remember that Scheduled queries use features of the BigQuery Data
+
+Transfer Service so verify if the transfer service is enabled or not.
+
+For that search for Transfer API, if not enabled, enable it.
+
+Mine is already enabled.
+
+Provide a name to this schedule.
+
+Then the repeat interval, hourly, daily, monthly or custom.
+
+When you are choosing custom then it expects a Cron-like time specification, for example
+
+: 1st,3rd monday of month 15:30, every wed of jan, etc and the shortest allowed period
+
+is 15 minutes.
+
+I am attaching the link in resources tab if you want more information on these cron-like
+
+custom formats.
+
+Then if you want to start immediately or you want to schedule it too.
+
+Then end never or schedule an end time.
+
+I can even select the time zones for both the times.
+
+If your query is not a DML or DDL, a destination table is required with the write preference.
+
+The results of the query will be saved there.
+
+But in case of DML or DDL since the destination table would already be in the query itself
+
+so you won’t an option to choose destination table there.
+
+Let say, If I am writing an insert statement.
+
+See, Bigquery got to know that you are scheduling an insert statement where the destination
+
+table is already mentioned in the query so it removes the option to choose it.
+
+This is not to mention that the destination table for your scheduled query must be in
+
+the same region as the data being queried.
+
+In Advance options, encryption…then here, if you are specifying a service account then
+
+the scheduled query will be run using that service account credential, if not provided
+
+it will request for user credentials.
+
+Who doesn’t know about service account, Guys a service account is a Google Account
+
+associated with your Google Cloud project.
+
+The service account can run jobs associated with its own service credentials rather than
+
+an end-user's credentials.
+
+Examples include running a batch processing pipeline, or a scheduled query using that service account.
+
+I will show in further sections of this course, how to create a service account and how we
+
+can use it as an access key to google cloud services.
+
+Last if you want to send email notifications for any fail runs, check this box.
+
+Emails are sent to the user who set up the schedule and you can’t configure those emails,
+
+whatever is the default matter set by google will be sent in email.
+
+Click on schedule and it might ask you for a signup.
+
+Actually a new pop-up will come up for that so make sure your browser allows pop-ups for
+
+this URL, otherwise query scheduling it going to throw an error.
+
+I am already signed in so won’t be able to show you that pop-up.
+
+Alright the schedule is setup, I don’t think so it requires in any run.
+
+Simple it is.
+
+And yes you can see all of your scheduled queries from here.
+
+Clicking on any of it will give you the whole series of its runs and You can edit, delete
+
+or disable any of your scheduled queries from here.
+
+This is okay but when you talk about scheduling, you always have to consider the backfilling
+
+mechanism.
+
+Backfill means running the queries for previous dates for which the scheduled run may have
+
+got missed due to any reason or even sometimes we do it intentionally.
+
+For example, let’s assume a scenario where you have scheduled a query that runs every
+
+morning at 10 o’clock and What that query basically does is, it looks out for current
+
+date data from the source table and load it to some other table and this source table
+
+is refreshed daily.
+
+Now some day you found that the source table is corrupt and it was not populated for the
+
+last 3 days.
+
+Somehow you managed and populated the source table with the historical 3 days data.
+
+Now what will happen to our scheduled query?
+
+Since your query is written in a way that it will pick only today’s data and load
+
+into the target table so definitely, today’s scheduled run is not going to pick the historical
+
+data of 3 days which you just loaded in the source.
+
+So is it going to get missed.
+
+Problem?
+
+Well not, here the feature of backfill will help us.
+
+Backfill allows us to run the query within a date range that you specify.
+
+So click on More, schedule backfill.
+
+Set the start and end date for when you'd like the backfill run to begin and end.
+
+It says start date is inclusive means for the start date the run will be done but the
+
+end date is exclusive, for it there will be no run.
+
+1 thing to keep in mind while providing these dates is that the date ranges you provide
+
+here are in UTC, but your query's schedule displayed on your dashboard is in your local
+
+time zone so you have to adjust the dates accordingly.
+
+Alright, that's for scheduling, now coming out of scheduling thing.
+
+After running, you will have Save results option from where you can download the query results to a local file,
+
+google Drive, Google Sheets or even to your clipboard.
+
+Let me download it locally.
+
+See it got downloaded.
+
+You can save this query from here.
+
+Just give it a name and set its visibility.
+
+Private saved queries are visible only to the user who creates them and Project-level
+
+saved queries are visible to members of the pre-defined BigQuery Cloud IAM roles with
+
+the required permissions.
+
+Save it .
+
+Once the query is saved it will come under this saved queries section.
+
+Click on it.
+
+It gives you the option to delete it or open it in editor.
+
+A shareable link will be generated
+
+for this query using which you can share with another member of your team.
+
+Please understand that, A shared query provides the person query text only.
+
+He or she would still need to have appropriate access to tables views etc to query the data.
+
+The only query option retained by a saved query is the "SQL Version", which governs
+
+whether the query uses legacy SQL or standard SQL.
+
+Save view.
+
+This would create the view of this whole query.
+
+There is a whole section coming ahead on views and materialized views so we can leave it
+
+here.
+
+I don’t think so if anything is left from the dashboard, we have covered almost all
+
+the buttons.
+
+Now before heading up to next lecture, let me give you a short piece of advice.
+
+Guys while you are in free trial and using the $300 for learning purposes then cleanup
+
+of the used tables is important to avoid incurring charges to your account for the resources
+
+used.
+
+See we have uploaded a file to Bigquery, it means we are using its storage.
+
+Now if you are done with this table and are moving to some other things then do remember
+
+to clean this table so that you are not charged unnecessarily for this idle table.
+
+To delete it click on dataset delete dataset .. It says this will delete all of its tables
+
+and this action can not be reversed.
+
+Type the dataset name and it will be deleted forever.
