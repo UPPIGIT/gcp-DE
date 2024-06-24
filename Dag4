@@ -1,0 +1,83 @@
+import logging
+from datetime import datetime, timedelta
+import pendulum
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from airflow.providers.google.cloud.hooks.gcs import GCSHook
+
+# Define constants
+BUCKET_NAME = 'your-gcs-bucket-name'
+FILE1_PREFIX = 'file1_'
+FILE2_PREFIX = 'file2_'
+RETRIES = 3
+RETRY_DELAY = timedelta(minutes=30)
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': RETRIES,
+    'retry_delay': RETRY_DELAY,
+}
+
+def check_files_in_gcs(**kwargs):
+    """Check if both required files exist in the GCS bucket."""
+    execution_date = kwargs['execution_date']
+    previous_day = execution_date - timedelta(days=1)
+    date_str = previous_day.strftime('%Y%m%d')
+    file1_pattern = f'{FILE1_PREFIX}{date_str}'
+    file2_pattern = f'{FILE2_PREFIX}{date_str}'
+
+    gcs_hook = GCSHook()
+
+    logging.info('Checking for files with pattern: %s', file1_pattern)
+    files1 = gcs_hook.list(BUCKET_NAME, prefix=file1_pattern)
+    logging.info('Files found: %s', files1)
+
+    logging.info('Checking for files with pattern: %s', file2_pattern)
+    files2 = gcs_hook.list(BUCKET_NAME, prefix=file2_pattern)
+    logging.info('Files found: %s', files2)
+
+    if not files1 or not files2:
+        logging.warning('Required files not found, retrying...')
+        return False
+
+    logging.info('Both required files found')
+    return True
+
+# Define the timezone for the DAG
+local_tz = pendulum.timezone("America/New_York")
+
+with DAG(
+    'check_gcs_files_and_proceed',
+    default_args=default_args,
+    description='Check for two specific files in GCS and proceed if found',
+    schedule_interval='30 0 * * *',  # Schedule for 12:30 AM EST
+    start_date=datetime(2023, 1, 1, tzinfo=local_tz),
+    catchup=False,
+    max_active_runs=1,
+    tags=['example'],
+    timezone=local_tz,
+) as dag:
+
+    check_files_task = PythonOperator(
+        task_id='check_files_in_gcs',
+        python_callable=check_files_in_gcs,
+        provide_context=True,
+    )
+
+    # Define the downstream task that should run if files are found
+    def process_files(**kwargs):
+        logging.info('Processing files...')
+        # Add your file processing code here
+        pass
+
+    process_files_task = PythonOperator(
+        task_id='process_files',
+        python_callable=process_files,
+        provide_context=True,
+    )
+
+    # Set task dependencies
+    check_files_task >> process_files_task
