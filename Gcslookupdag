@@ -1,0 +1,60 @@
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
+
+# Define constants
+BUCKET_NAME = 'your-gcs-bucket-name'
+FILE1_PREFIX = 'file1_'
+FILE2_PREFIX = 'file2_'
+RETRIES = 3
+RETRY_DELAY = timedelta(minutes=30)
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': RETRIES,
+    'retry_delay': RETRY_DELAY,
+}
+
+# DAG definition
+with DAG(
+    'check_gcs_files_and_proceed',
+    default_args=default_args,
+    description='Check for two specific files in GCS and proceed if found',
+    schedule_interval='30 0 * * *',  # Schedule for 12:30 AM EST
+    start_date=datetime(2023, 1, 1),
+    catchup=False,
+    max_active_runs=1,
+) as dag:
+
+    # Dummy start task
+    start = DummyOperator(
+        task_id='start'
+    )
+
+    # Check for file1
+    check_file1 = BashOperator(
+        task_id='check_file1',
+        bash_command=f'gsutil ls gs://{BUCKET_NAME}/{FILE1_PREFIX}{{{{ ds_nodash }}}}*.csv',
+        retries=RETRIES,
+        retry_delay=RETRY_DELAY,
+    )
+
+    # Check for file2
+    check_file2 = BashOperator(
+        task_id='check_file2',
+        bash_command=f'gsutil ls gs://{BUCKET_NAME}/{FILE2_PREFIX}{{{{ ds_nodash }}}}*.csv',
+        retries=RETRIES,
+        retry_delay=RETRY_DELAY,
+    )
+
+    # Dummy task that signifies the end of the file checks and can be replaced with actual processing tasks
+    process_files = DummyOperator(
+        task_id='process_files'
+    )
+
+    # Define the DAG dependencies
+    start >> [check_file1, check_file2] >> process_files
