@@ -1,0 +1,54 @@
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from datetime import datetime, timedelta
+import requests
+import logging
+
+def call_api(**kwargs):
+    url = "https://api.example.com/endpoint"
+    
+    logging.info("Calling API: %s", url)
+    
+    response = requests.get(url)
+    
+    logging.info("Received response status: %s %s", response.status_code, response.reason)
+    logging.info("Received response headers: %s", response.headers)
+    
+    if response.status_code == 200 and response.reason == "OK":
+        if 'status' in response.headers and response.headers['status'] == '200 OK':
+            logging.info("API call succeeded with '200 OK' in headers.")
+            return "Success"
+        else:
+            error_message = "API call failed, '200 OK' not found in response headers. Headers: {}".format(response.headers)
+            logging.error(error_message)
+            raise ValueError(error_message)
+    else:
+        error_message = "API call failed with status code: {} and reason: {}".format(response.status_code, response.reason)
+        logging.error(error_message)
+        raise ValueError(error_message)
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 6, 25),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'api_call_dag',
+    default_args=default_args,
+    description='A simple DAG to call an API and wait for a 200 OK response',
+    schedule_interval=None,  # No schedule, manual trigger
+)
+
+api_task = PythonOperator(
+    task_id='call_api_task',
+    python_callable=call_api,
+    provide_context=True,
+    dag=dag,
+)
+
+api_task
