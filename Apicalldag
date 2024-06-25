@@ -1,0 +1,39 @@
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from datetime import datetime, timedelta
+import requests
+
+def call_api(**kwargs):
+    url = "https://api.example.com/endpoint"
+    response = requests.get(url)
+    
+    if response.status_code == 200 and response.reason == "OK":
+        return "Success"
+    else:
+        raise ValueError("API call failed with status code: {} and reason: {}".format(response.status_code, response.reason))
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 6, 25),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'api_call_dag',
+    default_args=default_args,
+    description='A simple DAG to call an API and wait for a 200 OK response',
+    schedule_interval=timedelta(days=1),
+)
+
+api_task = PythonOperator(
+    task_id='call_api_task',
+    python_callable=call_api,
+    provide_context=True,
+    dag=dag,
+)
+
+api_task
