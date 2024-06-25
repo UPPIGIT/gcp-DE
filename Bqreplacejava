@@ -1,0 +1,77 @@
+package com.example.bigquery;
+
+import com.google.cloud.bigquery.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class BigQueryService {
+    private final BigQuery bigQuery;
+    private static final Logger logger = LoggerFactory.getLogger(BigQueryService.class);
+
+    public BigQueryService() {
+        this.bigQuery = BigQueryOptions.getDefaultInstance().getService();
+    }
+
+    public void replaceTableData(String datasetName, String tableName, List<Map<String, Object>> rows) {
+        // Define your table schema here. Update the columns and types as per your requirements.
+        String tableSchema = "column1 STRING, column2 INT64, column3 FLOAT64";
+
+        try {
+            // Step 1: Create or replace the table with the given schema using DDL
+            createOrReplaceTableWithDDL(datasetName, tableName, tableSchema);
+
+            // Step 2: Insert rows into the new table
+            TableId tableId = TableId.of(datasetName, tableName);
+            insertRowsIntoTable(tableId, rows);
+
+            logger.info("Data inserted successfully into table {}", tableName);
+        } catch (BigQueryException e) {
+            logger.error("BigQuery error occurred: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to replace table data in BigQuery", e);
+        } catch (InterruptedException e) {
+            logger.error("Interrupted while performing BigQuery operations: {}", e.getMessage(), e);
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while performing BigQuery operations", e);
+        }
+    }
+
+    private void createOrReplaceTableWithDDL(String datasetName, String tableName, String tableSchema) throws InterruptedException {
+        String query = String.format(
+            "CREATE OR REPLACE TABLE `%s.%s` (%s)",
+            datasetName, tableName, tableSchema
+        );
+
+        QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+        Job queryJob = bigQuery.create(JobInfo.newBuilder(queryConfig).build());
+
+        queryJob = queryJob.waitFor();
+        if (queryJob == null) {
+            throw new RuntimeException("Job no longer exists");
+        } else if (queryJob.getStatus().getError() != null) {
+            throw new RuntimeException(queryJob.getStatus().getError().toString());
+        } else {
+            logger.info("Table {}.{} created or replaced successfully", datasetName, tableName);
+        }
+    }
+
+    private void insertRowsIntoTable(TableId tableId, List<Map<String, Object>> rows) {
+        InsertAllRequest.Builder insertRequestBuilder = InsertAllRequest.newBuilder(tableId);
+        rows.forEach(insertRequestBuilder::addRow);
+
+        InsertAllRequest insertRequest = insertRequestBuilder.build();
+        InsertAllResponse response = bigQuery.insertAll(insertRequest);
+
+        if (response.hasErrors()) {
+            response.getInsertErrors().forEach((index, errors) ->
+                logger.error("Error inserting row {}: {}", index, errors));
+            throw new RuntimeException("Failed to insert rows into BigQuery");
+        } else {
+            logger.info("All rows inserted successfully into table {}", tableId.getTable());
+        }
+    }
+}
