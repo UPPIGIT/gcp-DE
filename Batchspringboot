@@ -1,0 +1,93 @@
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+    <!-- Other dependencies -->
+</dependencies>
+
+
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableScheduling
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+@Service
+public class DailyBatchService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DailyBatchService.class);
+
+    @Autowired
+    private YourService yourService;
+
+    @Scheduled(cron = "0 0 23 * * *", zone = "America/New_York")
+    public void executeDailyBatch() {
+        logger.info("Starting daily batch process");
+        try {
+            yourService.method1();
+            logger.info("Successfully executed method1");
+            yourService.method2();
+            logger.info("Successfully executed method2");
+        } catch (Exception e) {
+            logger.error("Error occurred during daily batch process", e);
+            // Additional error handling logic if needed
+        }
+        logger.info("Completed daily batch process");
+    }
+}
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+@Service
+public class DailyBatchService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DailyBatchService.class);
+
+    @Autowired
+    private YourService yourService;
+
+    // Temporary cron expression for testing (every minute)
+    @Scheduled(cron = "0 * * * * *", zone = "America/New_York")
+    public void executeDailyBatch() {
+        logger.info("Starting daily batch process");
+        try {
+            yourService.method1();
+            logger.info("Successfully executed method1");
+            yourService.method2();
+            logger.info("Successfully executed method2");
+        } catch (Exception e) {
+            logger.error("Error occurred during daily batch process", e);
+            // Additional error handling logic if needed
+        }
+        logger.info("Completed daily batch process");
+    }
+}
+
+
+
+
+
+
+
