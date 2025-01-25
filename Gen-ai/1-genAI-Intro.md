@@ -1,6 +1,5 @@
 ## **Generative AI**
 
-```
 
 So this is going to be our agenda for the module one lectures.
 
@@ -82,5 +81,5 @@ Because these are like a precursor to learning Generative AI.
 
 
 We will come back again to Generative AI and understand it in even more depth.
-```
+
 
